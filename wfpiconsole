@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+# Install wrapper for the WeatherFlow PiConsole. Modified from the PiHole 
+# installer. Copyright (C) 2018-2019 Peter Davis
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# DEFINE SCRIPT PREAMBLE
+# ------------------------------------------------------------------------------
+# -e option instructs bash to immediately exit if any command [1] has a non-zero 
+# exit status.
+set -e
+
+# Define installer colors
+if [[ -f "${coltable}" ]]; then
+    source ${coltable}
+else
+    COL_NC='\e[0m'
+    COL_LIGHT_GREEN='\e[1;32m'
+    COL_LIGHT_RED='\e[1;31m'
+    TICK="[${COL_LIGHT_GREEN}✓${COL_NC}]"
+    CROSS="[${COL_LIGHT_RED}✗${COL_NC}]"
+    INFO="[i]"
+    DONE="${COL_LIGHT_GREEN} done!${COL_NC}"
+    OVER="\\r\\033[K"
+fi
+
+# CHECK IF INPUT IS VALID COMMAND
+# ------------------------------------------------------------------------------
+isCommand() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# USER MUST HAVE ROOT PRIVILEGES TO INSTALL THE WeatherFlow PiConsole
+# ------------------------------------------------------------------------------
+main() {
+	
+	# Check if the current user has root privileges. If yes, fetch install 
+	# script from Github and run
+	if [[ "${EUID}" -eq 0 ]]; then
+        curl -sSL https://raw.githubusercontent.com/peted-davis/WeatherFlow_PiConsole/development/wfpiconsole.sh | bash -s install
+		
+	# Else, check if the sudo command is installed. If yes, fetch install script 
+	# from Github and run with sudo	
+    elif isCommand sudo; then
+		curl -sSL https://raw.githubusercontent.com/peted-davis/WeatherFlow_PiConsole/development/wfpiconsole.sh | sudo bash -s install
+		
+	# Else, install script cannot be run. Inform user that they must install the
+	# WeatherFlow PiConsole using a user with root privileges, or that sudo must
+	# be installed
+	else
+		printf "\\n"
+		printf "  %bError: Unable to install the WeatherFlow PiConsole.\\n\\n%b" "${COL_LIGHT_RED}" "${COL_NC}"
+		printf "  The WeatherFlow PiConsole requires elevated root privileges to install\\n"
+		printf "  Please check the installer code for any concerns regarding this requirement\\n"
+		printf "  The installer code can be found in the wfpiconsole.sh file in the Github repository \\n"
+		printf "  Please re-run this install wrarpper as a root user, or ensure sudo is installed\\n"
+	fi
+}
+
+# RUN MAIN FUNCTION
+# ------------------------------------------------------------------------------
+main "$@"
+
