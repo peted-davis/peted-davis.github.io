@@ -49,12 +49,12 @@ main() {
 	# Check if the current user has root privileges. If yes, fetch install 
 	# script from Github and run
 	if [[ "${EUID}" -eq 0 ]]; then
-        curl -sSL https://raw.githubusercontent.com/peted-davis/WeatherFlow_PiConsole/development/wfpiconsole.sh | bash -s install
+        curl -sSL https://raw.githubusercontent.com/peted-davis/WeatherFlow_PiConsole/master/wfpiconsole.sh | bash -s install
 		
 	# Else, check if the sudo command is installed. If yes, fetch install script 
 	# from Github and run with sudo	
     elif isCommand sudo; then
-		curl -sSL https://raw.githubusercontent.com/peted-davis/WeatherFlow_PiConsole/development/wfpiconsole.sh | sudo bash -s install
+		curl -sSL https://raw.githubusercontent.com/peted-davis/WeatherFlow_PiConsole/master/wfpiconsole.sh | sudo bash -s install
 		
 	# Else, install script cannot be run. Inform user that they must install the
 	# WeatherFlow PiConsole using a user with root privileges, or that sudo must
