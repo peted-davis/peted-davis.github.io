@@ -46,27 +46,21 @@ isCommand() {
 # ------------------------------------------------------------------------------
 main() {
 	
-	# Check if the current user has root privileges. If yes, fetch install 
-	# script from Github and run
-	if [[ "${EUID}" -eq 0 ]]; then
-        curl -sSL https://raw.githubusercontent.com/peted-davis/WeatherFlow_PiConsole/master/wfpiconsole.sh | bash -s install
-		
-	# Else, check if the sudo command is installed. If yes, fetch install script 
-	# from Github and run with sudo	
-    elif isCommand sudo; then
-		curl -sSL https://raw.githubusercontent.com/peted-davis/WeatherFlow_PiConsole/master/wfpiconsole.sh | sudo bash -s install
-		
-	# Else, install script cannot be run. Inform user that they must install the
-	# WeatherFlow PiConsole using a user with root privileges, or that sudo must
-	# be installed
-	else
-		printf "\\n"
-		printf "  %bError: Unable to install the WeatherFlow PiConsole.\\n\\n%b" "${COL_LIGHT_RED}" "${COL_NC}"
-		printf "  The WeatherFlow PiConsole requires elevated root privileges to install\\n"
-		printf "  Please check the installer code for any concerns regarding this requirement\\n"
-		printf "  The installer code can be found in the wfpiconsole.sh file in the Github repository \\n"
-		printf "  Please re-run this install wrarpper as a root user, or ensure sudo is installed\\n"
-	fi
+    # Ensure sudo command is available and script can be elevated to root 
+    # privileges
+    if [[ ! -x "$(command -v sudo)" ]]; then
+        printf "\\n"
+        printf "  %bError: Unable to install the WeatherFlow PiConsole.\\n\\n%b" "${COL_LIGHT_RED}" "${COL_NC}"
+        printf "  Root access is required to install the WeatherFlow PiConsole\\n"
+        printf "  Please check the installer code for any concerns regarding this requirement\\n"
+		printf "  The installer code can be found in the wfpiconsole.sh file in the Github repository\\n"
+        printf "  Please install sudo and run this script again Pi\\n\\n"
+        cleanUp
+        exit 1
+    fi
+    
+    # Fetch install script from Github and run
+    curl -sSL https://raw.githubusercontent.com/peted-davis/WeatherFlow_PiConsole/master/wfpiconsole.sh | bash -s install
 }
 
 # RUN MAIN FUNCTION
