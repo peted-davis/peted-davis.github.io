@@ -59,7 +59,7 @@ main() {
         exit 1
     fi
     
-    # Fetch install script from Github and run
+    # Fetch install script from Github and run by piping to bash
     curl -sSL https://raw.githubusercontent.com/peted-davis/WeatherFlow_PiConsole/main/wfpiconsole.sh | bash -s install
 }
 
