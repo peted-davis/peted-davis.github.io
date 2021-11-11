@@ -60,7 +60,7 @@ main() {
     fi
     
     # Fetch install script from Github and run
-    curl -sSL https://raw.githubusercontent.com/peted-davis/WeatherFlow_PiConsole/master/wfpiconsole.sh | bash -s install
+    curl -sSL https://raw.githubusercontent.com/peted-davis/WeatherFlow_PiConsole/main/wfpiconsole.sh | bash -s install
 }
 
 # RUN MAIN FUNCTION
